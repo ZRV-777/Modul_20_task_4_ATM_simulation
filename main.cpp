@@ -29,8 +29,6 @@ const int ZERO = 0;
 
 //ATM filling function
 void fill_ATM (fstream& fio);
-//ATM show banknotes function
-void show_ATM (fstream& fio);
 //global variables initializer
 void ATM_state(fstream& fio);
 //user input moneys function
@@ -40,11 +38,12 @@ void return_money_to_ATM (fstream& fio, int& sum, const int& nominal, int& atm_n
 
 int main()
 {
+    srand(time(nullptr));
     fstream fio;
-    fio.open("C:\\develop\\test\\build\\modul_20_task_4\\atm.bin", ios::binary | ios::out | ios::in);
+    fio.open("atm.bin", ios::binary | ios::out | ios::in);
     if (!fio.is_open())
     {
-        cerr << "Error! File is not open!" << endl;
+        cerr << "Error! File is not open! ATM is empty" << endl;
         return 1;
     }
 
@@ -55,7 +54,7 @@ int main()
     //first time fill money ATM
     fill_ATM(fio);
 
-    char ans = '+';
+    char ans = ' ';
     while (ans != 'q')
     {
         //zeroing banknotes for user
@@ -90,8 +89,8 @@ int main()
                     cin >> sum;
                 }
             }
-            cout << "Sum give to user - " << sum << endl; //sum user got
 
+            cout << "Sum give to user - " << sum << endl; //sum user got
             //start input moeny from ATM, started from 5000
             get_money_from_ATM(fio, sum, FIVE_THOUSAND_RUB, atm_5000, user_5000);
             get_money_from_ATM(fio, sum, TWO_THOUSAND_RUB, atm_2000, user_2000);
@@ -108,17 +107,16 @@ int main()
             cout << "200 - " << user_200 << ", total - " << user_200 * TWO_HUNDRED_RUB << endl;
             cout << "100 - " << user_100 << ", total - " << user_100 * ONE_HUNDRED_RUB << endl << endl;
 
+            cout << "ATM state after giving money: " << endl;
+            cout << "Total money in the ATM - " << total_atm_money << endl;
+
             //show how many banknotes ATM has
-            cout << "ATM`s money" << endl;
             cout << "5000 - " << atm_5000 << ", total - " << atm_5000 * FIVE_THOUSAND_RUB << endl;
             cout << "2000 - " << atm_2000 << ", total - " << atm_2000 * TWO_THOUSAND_RUB << endl;
             cout << "1000 - " << atm_1000 << ", total - " << atm_1000 * ONE_THOUSAND_RUB << endl;
             cout << "500 - " << atm_500 << ", total - " << atm_500 * FIVE_HUNDRED_RUB << endl;
             cout << "200 - " << atm_200 << ", total - " << atm_200 * TWO_HUNDRED_RUB << endl;
             cout << "100 - " << atm_100 << ", total - " << atm_100 * ONE_HUNDRED_RUB << endl << endl;
-
-            cout << "Total cash in ATM - " << total_atm_money << endl; //total money in ATM
-            cout << "ATM state after giving money" << endl; //ATM state after giving money
 
             //if sum giving an ATM is not equal 0, return money to ATM
             if (sum != 0)
@@ -130,10 +128,9 @@ int main()
                 return_money_to_ATM(fio, sum, TWO_HUNDRED_RUB, atm_200, user_200);
                 return_money_to_ATM(fio, sum, ONE_HUNDRED_RUB, atm_100, user_100);
 
-                cout << "ATM state after returnign money" << endl;
-                //show_ATM(fio);
+                cout << "ATM state after returning money:" << endl;
 
-                cout << "User`s money after returning" << endl;
+                cout << "User`s money after returning:" << endl;
                 cout << "5000 - " << user_5000 << ", total - " << user_5000 * FIVE_THOUSAND_RUB << endl;
                 cout << "2000 - " << user_2000 << ", total - " << user_2000 * TWO_THOUSAND_RUB << endl;
                 cout << "1000 - " << user_1000 << ", total - " << user_1000 * ONE_THOUSAND_RUB << endl;
@@ -158,8 +155,12 @@ int main()
         {
             fill_ATM(fio);
         }
-            //if input any other char, exit
-        else break;
+        else if (ans == 'q' || ans == 'Q')
+        {
+            cout << "Goodbye!" << endl;
+            break;
+        }
+        else cout << "Unknown command! Input +/- or q" << endl;
     }
 
     fio.close();
@@ -183,7 +184,14 @@ void fill_ATM(fstream& fio)
         }
     }
     ATM_state(fio);//refresh ATM state
-    cout << "ATM state after filling with money" << endl;
+    cout << "ATM state after filling with money:" << endl << endl;
+    cout << "5000 - " << atm_5000 << ", total - " << atm_5000 * FIVE_THOUSAND_RUB << endl;
+    cout << "2000 - " << atm_2000 << ", total - " << atm_2000 * TWO_THOUSAND_RUB << endl;
+    cout << "1000 - " << atm_1000 << ", total - " << atm_1000 * ONE_THOUSAND_RUB << endl;
+    cout << "500 - " << atm_500 << ", total - " << atm_500 * FIVE_HUNDRED_RUB << endl;
+    cout << "200 - " << atm_200 << ", total - " << atm_200 * TWO_HUNDRED_RUB << endl;
+    cout << "100 - " << atm_100 << ", total - " << atm_100 * ONE_HUNDRED_RUB << endl;
+    cout << "Total money in the ATM - " << total_atm_money << endl << endl;
 }
 
 void ATM_state(fstream& fio)
